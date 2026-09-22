@@ -22,7 +22,7 @@ This folder contains the standalone English scripts. The [Chinese version](../zh
 ### macOS / Linux / WSL (Bash)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Zgh332358/claude-key-setup/main/en/configure_claude.sh -o configure_claude.sh
+curl -fsSL https://raw.githubusercontent.com/stepfun-ai/Step-Cookbook/main/scripts/claude-key-setup/en/configure_claude.sh -o configure_claude.sh
 chmod +x configure_claude.sh
 bash configure_claude.sh
 ```
@@ -33,7 +33,7 @@ Run the script in a regular PowerShell session as your current user. Administrat
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-irm https://raw.githubusercontent.com/Zgh332358/claude-key-setup/main/en/configure_claude.ps1 -OutFile configure_claude.ps1
+irm https://raw.githubusercontent.com/stepfun-ai/Step-Cookbook/main/scripts/claude-key-setup/en/configure_claude.ps1 -OutFile configure_claude.ps1
 .\configure_claude.ps1
 ```
 

@@ -21,7 +21,7 @@
 
 ### macOS / Linux（Bash）
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Zgh332358/claude-key-setup/main/zh-CN/configure_claude.sh -o configure_claude.sh
+curl -fsSL https://raw.githubusercontent.com/stepfun-ai/Step-Cookbook/main/scripts/claude-key-setup/zh-CN/configure_claude.sh -o configure_claude.sh
 chmod +x configure_claude.sh
 bash configure_claude.sh
 ```
@@ -32,7 +32,7 @@ bash configure_claude.sh
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-irm https://raw.githubusercontent.com/Zgh332358/claude-key-setup/main/zh-CN/configure_claude.ps1 -OutFile configure_claude.ps1
+irm https://raw.githubusercontent.com/stepfun-ai/Step-Cookbook/main/scripts/claude-key-setup/zh-CN/configure_claude.ps1 -OutFile configure_claude.ps1
 .\configure_claude.ps1
 ```
 
