@@ -1,0 +1,54 @@
+name: Test localized setup scripts
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bash:
+    name: Bash (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check shell syntax
+        run: |
+          bash -n zh-CN/configure_claude.sh
+          bash -n en/configure_claude.sh
+          bash -n configure_claude.sh
+      - name: Run both language variants and integrity checks
+        run: |
+          command -v jq
+          python3 -B -m unittest discover -s tests -v
+
+  windows:
+    name: Windows ${{ matrix.shell }} (${{ matrix.language }})
+    runs-on: windows-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+        language: [zh-CN, en]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Verify private ACLs, configuration updates, and recovery (Windows PowerShell)
+        if: matrix.shell == 'powershell'
+        shell: powershell
+        run: ./tests/test_configure_claude.ps1 -Language '${{ matrix.language }}'
+      - name: Verify private ACLs, configuration updates, and recovery (PowerShell 7)
+        if: matrix.shell == 'pwsh'
+        shell: pwsh
+        run: ./tests/test_configure_claude.ps1 -Language '${{ matrix.language }}'
