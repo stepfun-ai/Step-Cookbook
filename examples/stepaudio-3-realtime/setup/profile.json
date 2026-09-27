@@ -1,0 +1,14 @@
+{
+  "id": "04_StepAudio3_Realtime",
+  "title": "StepAudio 3 Realtime 实时对话与 VAD",
+  "script": "realtime_demo.py",
+  "minimal": "1 次语音会话，按 Enter 结束",
+  "full": "2 次会话，对比静音阈值；每次按 Enter 结束",
+  "dependencies": {
+    "websocket-client": "1.8.0",
+    "sounddevice": "0.5.2",
+    "cffi": "2.0.0",
+    "pycparser": "2.23"
+  },
+  "assets": []
+}

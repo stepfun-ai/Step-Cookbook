@@ -1,0 +1,16 @@
+{
+  "id": "05_StepAudio3_TTS",
+  "title": "StepAudio 3 TTS 与个性化音色",
+  "script": "tts_demo.py",
+  "minimal": "1 次预置音色合成",
+  "full": "4 次预置合成 + 上传参考录音 + 创建个性化音色 + 1 次个性化合成",
+  "dependencies": {},
+  "assets": [
+    "voice_reference/LJ025-0076.wav",
+    "voice_reference/SOURCE.md",
+    "voice_reference/new_text.txt",
+    "voice_reference/personalized_example.wav",
+    "voice_reference/source.json",
+    "voice_reference/transcript.txt"
+  ]
+}

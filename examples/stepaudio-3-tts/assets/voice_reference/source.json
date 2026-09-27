@@ -1,0 +1,15 @@
+{
+  "duration_seconds": 8.396643990929705,
+  "sample_rate": 22050,
+  "channels": 1,
+  "sample_width_bytes": 2,
+  "source_page": "https://keithito.com/LJ-Speech-Dataset/",
+  "original_download_url": "https://keithito.com/LJ-Speech-Dataset/LJ025-0076.wav",
+  "filename": "LJ025-0076.wav",
+  "sha256": "b31133c05e9667a27db5be539ca089aa99e95ca7bef52040c902ff781680873a",
+  "processing": "未裁剪、未重采样，下载原文件直接用于复刻",
+  "license_statement": "发布者将文本、音频及标注标为 public domain；原始许可说明见来源页。",
+  "speaker_credit": "Linda Johnson / LibriVox",
+  "dataset_credit": "Keith Ito, LJ Speech 1.1",
+  "retrieved_date": "2026-09-26"
+}

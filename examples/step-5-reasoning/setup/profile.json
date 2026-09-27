@@ -1,0 +1,9 @@
+{
+  "id": "01_Step5_推理强度调参",
+  "title": "Step 5 Preview 推理强度调参",
+  "script": "reasoning_demo.py",
+  "minimal": "1 次文本请求",
+  "full": "11 次文本请求，包含三档推理强度对照",
+  "dependencies": {},
+  "assets": []
+}

@@ -1,0 +1,13 @@
+{
+  "id": "02_Step5_图像理解与结构化输出",
+  "title": "Step 5 Preview 图像理解与结构化输出",
+  "script": "vision_demo.py",
+  "minimal": "1 次图像请求",
+  "full": "3 次图像请求，包含缺失字段和替换输入",
+  "dependencies": {},
+  "assets": [
+    "vision/adapted.png",
+    "vision/clear.png",
+    "vision/missing.png"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "03_Step5_工具调用",
+  "title": "Step 5 Preview 工具调用",
+  "script": "tool_demo.py",
+  "minimal": "1 个计算任务，最多 5 轮请求",
+  "full": "3 个任务，每个最多 5 轮请求",
+  "dependencies": {},
+  "assets": []
+}
