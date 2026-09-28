@@ -2,8 +2,6 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
-> Both language versions use the same sample inputs, parameters, and checking rules. Chinese prompts, string literals, and output fields in the code are preserved so that runs remain comparable.
-
 ## 1. Understand the model and reasoning effort
 
 Step 5 Preview is a multimodal model that accepts text, image, and video inputs and generates text. Applications provide messages, source material, and tools through the API for the model to interpret, reason over, and answer. [Model overview](https://platform.stepfun.com/docs/zh/guides/models/step-5-preview)
@@ -18,13 +16,10 @@ This guide is for developers familiar with Python functions and JSON. You will s
 
 ### 2.1 Prerequisites
 
-**Required knowledge:** Python functions, dictionaries, and JSON, plus a basic understanding of the request–response flow. No specific application framework is required.
+**Required knowledge:** Familiarity with Python functions, dictionaries, and JSON.
 
-**You will need:**
-
-- Python 3.10 or later, a terminal, and a code editor of your choice.
-- A [StepFun Platform](https://platform.stepfun.com/) account with an API key and access to `step-5-preview`.
-- Network access to the API for your selected region. Live requests consume your account quota.
+- Python 3.10 or later.
+- A StepFun API key with access to `step-5-preview`.
 
 ### 2.2 Create a Python environment
 
@@ -52,13 +47,27 @@ After activation, confirm the Python version with the following command. All sub
 python --version
 ```
 
-### 2.3 Install dependencies
+### 2.3 Dependencies
 
-The request and file-handling code uses the Python standard library, so no third-party SDK is required. If your project already uses another HTTP client, you can keep it and use the request bodies shown here.
+This example uses only the Python standard library.
 
 ### 2.4 Configure credentials and run the example
 
-The code reads the `STEPFUN_API_KEY` environment variable. Set it in your IDE's run configuration or your service's deployment environment. If it is not set locally, the code prompts for the key in the terminal with input hidden. You do not need to store the key in source code.
+Set `STEP_API_KEY` in the terminal that will run the example. Replace `YOUR_STEP_API_KEY` with your API key.
+
+macOS / Linux:
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+If the variable is unset, the script prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -67,8 +76,6 @@ Create `reasoning_demo.py` in your project and **copy this guide's Python code b
 ```bash
 python reasoning_demo.py
 ```
-
-The code is organized into connection configuration, capability parameters, calls, and result handling. To integrate it into an existing project, reuse the functions in these groups and call them from your application entry point. The companion `.ipynb` provides an optional interactive format for the same code; the Python file contains the complete execution path for this guide.
 
 ### 2.5 Initialize the connection and credentials
 
@@ -87,11 +94,11 @@ BASE_URLS = {"cn": "https://api.stepfun.com/v1", "global": "https://api.stepfun.
 REGION = "cn"
 
 def get_key() -> str:
-    key = os.environ.get("STEPFUN_API_KEY", "").strip()
+    key = os.environ.get("STEP_API_KEY", "").strip()
     if not key:
-        key = getpass.getpass("输入 StepFun API 密钥（隐藏输入，不保存到文件）：").strip()
+        key = getpass.getpass("Enter your StepFun API key (input hidden): ").strip()
     if not key:
-        raise ValueError("未提供密钥，已停止。")
+        raise ValueError("No API key provided.")
     return key
 ```
 
@@ -116,9 +123,9 @@ def post(payload: dict, key: str, region: str = "cn", path: str = "/chat/complet
             content_type = response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as exc:
         # Do not write request headers or raw server errors to result files.
-        raise RuntimeError(f"HTTP {exc.code}：核对区域、权限、额度及请求字段；本例不自动重试。") from None
+        raise RuntimeError(f"HTTP {exc.code}: Check the region, permissions, quota, and request fields. This example does not retry automatically.") from None
     except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError(f"网络连接失败或超过 {HTTP_TIMEOUT_SECONDS} 秒；本次停止。") from None
+        raise RuntimeError(f"Connection failed or a network operation exceeded the {HTTP_TIMEOUT_SECONDS}-second timeout.") from None
     elapsed = time.perf_counter() - start
     return body, elapsed, content_type
 ```
@@ -130,7 +137,7 @@ def chat(payload: dict, key: str, region: str = "cn") -> tuple[dict, float]:
     body, elapsed, _ = post(payload, key, region)
     data = json.loads(body)
     if not isinstance(data, dict) or not data.get("choices"):
-        raise ValueError("响应没有 choices，不能作为一次成功生成。")
+        raise ValueError("The response is missing a nonempty choices array.")
     return data, elapsed
 
 def response_record(data: dict) -> dict:
@@ -160,9 +167,9 @@ The three inputs cover filtered summation, ordering under constraints, and set c
 MODEL = "step-5-preview"
 MAX_TOKENS = 4096
 SAMPLES = [
-    {"id": "sum_even", "prompt": "把 18、7、26、13、12 中的偶数相加。只返回 JSON，字段 answer 为整数。", "answer": 56},
-    {"id": "order", "prompt": "A、B、C、D 各出现一次。D 在 A 前，A 在 B 前，B 在 C 前。按从左到右的顺序排列。只返回 JSON，字段 answer 为四个字母组成的字符串，不含空格。", "answer": "DABC"},
-    {"id": "count", "prompt": "在 1 到 30（包含两端）的整数中，能被 3 或 5 整除、但不能同时被二者整除的数共有几个？只返回 JSON，字段 answer 为整数。", "answer": 12},
+    {"id": "sum_even", "prompt": "Add the even numbers in this list: 18, 7, 26, 13, 12. Return only a JSON object with an integer answer field.", "answer": 56},
+    {"id": "order", "prompt": "Arrange A, B, C, and D from left to right, using each letter once. D must precede A, A must precede B, and B must precede C. Return only a JSON object whose answer field is the four-letter sequence without spaces.", "answer": "DABC"},
+    {"id": "count", "prompt": "How many integers from 1 through 30 inclusive are divisible by either 3 or 5, but not both? Return only a JSON object with an integer answer field.", "answer": 12},
 ]
 ```
 
@@ -175,13 +182,13 @@ First define the parameters sent to the model, then implement local result handl
 ```python
 def request_for(sample, effort, model, max_tokens):
     return {"model": model, "messages": [
-        {"role": "system", "content": "完成给定任务，最终回答只输出要求的 JSON 对象。"},
+        {"role": "system", "content": "Complete the task and return only the requested JSON object as your final answer."},
         {"role": "user", "content": sample["prompt"]}],
         "reasoning_effort": effort, "response_format": {"type": "json_object"},
         "max_tokens": max_tokens, "stream": False}
 ```
 
-`low`, `medium`, and `high` are discrete levels, not durations in seconds. Keep `max_tokens` fixed when comparing effort levels. To study the output budget, run a separate comparison that changes only that limit. Use the response's `finish_reason` to determine whether generation completed normally.
+Keep `max_tokens` fixed when comparing effort levels. To study the output budget, run a separate comparison that changes only that limit. Use the response's `finish_reason` to determine whether generation completed normally.
 
 **Result handling.** The following code checks the answer and records usage without adding model parameters. The reference value for `answer` stays local.
 
@@ -245,7 +252,7 @@ for sample, effort, repeat in jobs:
 
 ## 5. Interpret the results and choose a configuration
 
-Start with the number of completed runs at each level, then consider answer quality, elapsed time, and usage together. These three questions describe performance only on this input set. For a project decision, use a representative task set and retain the underlying counts. If `total_tokens` is absent, record it as missing rather than zero.
+Start with the number of completed runs at each level, then consider answer quality, elapsed time, and usage together. These measurements describe performance on this input set only. For a project decision, use a representative task set and retain the underlying counts. If `total_tokens` is absent, record it as missing rather than zero.
 
 ```python
 summary = []
@@ -254,11 +261,11 @@ for effort in EFFORTS:
     timings = [row["elapsed_seconds"] for row in group]
     tokens = [(row.get("usage") or {}).get("total_tokens") for row in group]
     summary.append({
-        "推理强度": effort, "实际次数": len(group),
-        "符合要求次数": sum(row["success"] for row in group),
-        "完整响应耗时中位数_秒": statistics.median(timings) if timings else None,
-        "已报告总token": sum(n for n in tokens if n is not None),
-        "用量缺失次数": sum(n is None for n in tokens),
+        "reasoning_effort": effort, "completed_runs": len(group),
+        "successful_runs": sum(row["success"] for row in group),
+        "median_full_response_seconds": statistics.median(timings) if timings else None,
+        "reported_total_tokens": sum(n for n in tokens if n is not None),
+        "runs_with_missing_usage": sum(n is None for n in tokens),
     })
 print(json.dumps(summary, ensure_ascii=False, indent=2))
 save_json(output_dir / "summary.json", summary)
@@ -275,7 +282,7 @@ Start with a small change: replace 12 with 14 in the first question, which chang
 ```python
 my_sample = {
     "id": "sum_even_changed",
-    "prompt": "把 18、7、26、13、14 中的偶数相加。只返回 JSON，字段 answer 为整数。",
+    "prompt": "Add the even numbers in this list: 18, 7, 26, 13, 14. Return only a JSON object with an integer answer field.",
     "answer": 58,
 }
 my_result = run_case(my_sample, "high")
@@ -285,4 +292,4 @@ save_json(output_dir / "my_task.json", my_result)
 
 To use project-specific tasks, update the inputs and reference answers in `SAMPLES`. If the target output is no longer a single-field JSON object, update both the prompt requirements and `grade()`. Run one input first, then compare effort levels, and choose a configuration against your quality and response-time requirements. The reusable outputs are the request, recording, and comparison methods, along with the result files produced by your run.
 
-Last updated: 2026-09-27. The code runs in a standard Python project; the companion Notebook is an optional format with the same content. Model identifiers and API field names remain in English.
+Last updated: 2026-09-28.
