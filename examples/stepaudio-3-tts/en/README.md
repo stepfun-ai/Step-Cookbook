@@ -394,4 +394,18 @@ For a preset voice, replace `TEXT` and `VOICE` and reuse `synthesize()`. For a p
 
 If the reference voice and target text are Chinese, set the corresponding language to `zh` and supply a Chinese transcript that matches the recording word for word. In your application, play the result at the actual sample rate stored in the WAV file. Retain the new voice ID and input version so you can regenerate audio under the same account.
 
+## 7. Companion code and starter project
+
+This example includes a Jupyter Notebook, an editable Python script, and a starter project for running and adapting the code. Browse the [example directory](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/stepaudio-3-tts) for all files, or see the [setup and launch guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/README.md) for instructions.
+
+| Resource | How to use it |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/05_StepAudio3_TTS.ipynb) | Work through the example cell by cell and inspect the inputs and results at each step. |
+| [Python example script](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/tts_demo.py) | Run the minimal example or full experiment from a terminal, or adapt the code for your application. |
+| [macOS launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/%E5%90%AF%E5%8A%A8.command) · [Windows launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/%E5%90%AF%E5%8A%A8.bat) · [launcher menu](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/launcher.py) | Prepare the runtime, then choose the minimal example or full experiment and the API region. |
+| [Environment configuration](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/stepaudio-3-tts/setup) · [locked dependencies](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/setup/requirements.lock) | Inspect the setup scripts, dependency versions, and environment checks. |
+| [Reference audio and text](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/stepaudio-3-tts/assets/voice_reference) · [source information](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-tts/assets/voice_reference/SOURCE.md) | Find the reference recording, transcript, new synthesis text, synthesized example, and provenance details. |
+
+To use the launchers, obtain the complete example directory from the current repository and keep its relative paths intact. Initial setup requires an internet connection. The supplied Notebook, Python script, launch menu, and setup guide currently follow the Chinese version. To reproduce this guide's English prompts, sample inputs, and result fields, use the Python code blocks in this guide.
+
 Last updated: 2026-09-29.

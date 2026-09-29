@@ -294,4 +294,17 @@ save_json(output_dir / "my_task.json", my_result)
 
 To use project-specific tasks, update the inputs and reference answers in `SAMPLES`. If the target output is no longer a single-field JSON object, update both the prompt requirements and `grade()`. Run one input first, then compare effort levels, and choose a configuration against your quality and response-time requirements. The reusable outputs are the request, recording, and comparison methods, along with the result files produced by your run.
 
+## 7. Companion code and starter project
+
+This example includes a Jupyter Notebook, an editable Python script, and a starter project for running and adapting the code. Browse the [example directory](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-reasoning) for all files, or see the [setup and launch guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/README.md) for instructions.
+
+| Resource | How to use it |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/01_Step5_%E6%8E%A8%E7%90%86%E5%BC%BA%E5%BA%A6%E8%B0%83%E5%8F%82.ipynb) | Work through the example cell by cell and inspect the inputs and results at each step. |
+| [Python example script](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/reasoning_demo.py) | Run the minimal example or full experiment from a terminal, or adapt the code for your application. |
+| [macOS launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/%E5%90%AF%E5%8A%A8.command) · [Windows launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/%E5%90%AF%E5%8A%A8.bat) · [launcher menu](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/launcher.py) | Prepare the runtime, then choose the minimal example or full experiment and the API region. |
+| [Environment configuration](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-reasoning/setup) · [locked dependencies](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-reasoning/setup/requirements.lock) | Inspect the setup scripts, dependency versions, and environment checks. |
+
+To use the launchers, obtain the complete example directory from the current repository and keep its relative paths intact. Initial setup requires an internet connection. The supplied Notebook, Python script, launch menu, and setup guide currently follow the Chinese version. To reproduce this guide's English prompts, sample inputs, and result fields, use the Python code blocks in this guide.
+
 Last updated: 2026-09-29.
