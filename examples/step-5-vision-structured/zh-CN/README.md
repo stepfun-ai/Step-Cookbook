@@ -312,4 +312,18 @@ save_json(output_dir / "my_image.json", my_result)
 
 模型与图片输入依据：[Step 5 Preview](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview)。三张示例图片为本项目生成的演示材料。
 
+## 7. 配套代码与运行脚手架
+
+本案例提供 Notebook、可编辑 Python 脚本及运行脚手架，便于逐步学习、运行示例和接入自己的项目。完整文件见[案例目录](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-vision-structured)，环境准备和启动步骤见[运行指南](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/README.md)。
+
+| 配套资源 | 用途 |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/02_Step5_%E5%9B%BE%E5%83%8F%E7%90%86%E8%A7%A3%E4%B8%8E%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA.ipynb) | 按单元格阅读和执行案例，观察每一步的输入与结果。 |
+| [Python 示例脚本](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/vision_demo.py) | 在终端运行最小示例或完整实验，也可修改后复用到自己的项目。 |
+| [macOS 启动入口](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/%E5%90%AF%E5%8A%A8.command) · [Windows 启动入口](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/%E5%90%AF%E5%8A%A8.bat) · [启动菜单](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/launcher.py) | 准备案例运行环境，并选择最小示例、完整实验及 API 区域。 |
+| [环境配置目录](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-vision-structured/setup) · [锁定依赖](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/setup/requirements.lock) | 包含环境准备脚本、依赖版本和环境检查程序。 |
+| [表格示例图片](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-vision-structured/assets/vision) | 包含清晰表格、缺失值表格和替换数值后的图片，供提取与校验使用。 |
+
+使用启动脚手架时，请从当前仓库获取完整案例目录，并保留启动文件、`setup/` 和素材之间的相对路径；首次准备环境需要联网。配套 Notebook、Python 脚本和启动菜单对应中文版，英文版的提示词、示例输入和部分结果字段可能不同。
+
 更新日期：2026-09-29。正文代码面向普通 Python 项目；配套 Notebook 为同内容的可选形式。模型标识与接口字段保留英文。

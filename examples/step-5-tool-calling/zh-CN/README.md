@@ -343,4 +343,17 @@ save_json(output_dir / "my_task.json", my_result)
 
 接口依据：[StepFun 工具调用](https://platform.stepfun.ai/docs/en/api-reference/tool-call)。
 
+## 7. 配套代码与运行脚手架
+
+本案例提供 Notebook、可编辑 Python 脚本及运行脚手架，便于逐步学习、运行示例和接入自己的项目。完整文件见[案例目录](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-tool-calling)，环境准备和启动步骤见[运行指南](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/README.md)。
+
+| 配套资源 | 用途 |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/03_Step5_%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8.ipynb) | 按单元格阅读和执行案例，观察每一步的输入与结果。 |
+| [Python 示例脚本](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/tool_demo.py) | 在终端运行最小示例或完整实验，也可修改后复用到自己的项目。 |
+| [macOS 启动入口](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/%E5%90%AF%E5%8A%A8.command) · [Windows 启动入口](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/%E5%90%AF%E5%8A%A8.bat) · [启动菜单](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/launcher.py) | 准备案例运行环境，并选择最小示例、完整实验及 API 区域。 |
+| [环境配置目录](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-tool-calling/setup) · [锁定依赖](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/setup/requirements.lock) | 包含环境准备脚本、依赖版本和环境检查程序。 |
+
+使用启动脚手架时，请从当前仓库获取完整案例目录，并保留启动文件、`setup/` 和素材之间的相对路径；首次准备环境需要联网。配套 Notebook、Python 脚本和启动菜单对应中文版，英文版的提示词、示例输入和部分结果字段可能不同。
+
 更新日期：2026-09-29。正文代码面向普通 Python 项目；配套 Notebook 为同内容的可选形式。模型标识与接口字段保留英文。

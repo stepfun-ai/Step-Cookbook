@@ -507,4 +507,17 @@ Reuse the code along these boundaries:
 
 First complete a short session with this guide's settings, then change one variable at a time for your pause patterns and devices. Available model names and session formats are governed by the [official model documentation](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-realtime) and your account configuration.
 
+## 7. Companion code and starter project
+
+This example includes a Jupyter Notebook, an editable Python script, and a starter project for running and adapting the code. Browse the [example directory](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/stepaudio-3-realtime) for all files, or see the [setup and launch guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/README.md) for instructions.
+
+| Resource | How to use it |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/04_StepAudio3_Realtime.ipynb) | Work through the example cell by cell and inspect the inputs and results at each step. |
+| [Python example script](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/realtime_demo.py) | Run the minimal example or full experiment from a terminal, or adapt the code for your application. |
+| [macOS launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/%E5%90%AF%E5%8A%A8.command) · [Windows launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/%E5%90%AF%E5%8A%A8.bat) · [launcher menu](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/launcher.py) | Prepare the runtime, then choose the minimal example or full experiment and the API region. |
+| [Environment configuration](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/stepaudio-3-realtime/setup) · [locked dependencies](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/stepaudio-3-realtime/setup/requirements.lock) | Inspect the setup scripts, dependency versions, and environment checks. |
+
+To use the launchers, obtain the complete example directory from the current repository and keep its relative paths intact. Initial setup requires an internet connection. The supplied Notebook, Python script, launch menu, and setup guide currently follow the Chinese version. To reproduce this guide's English prompts, sample inputs, and result fields, use the Python code blocks in this guide.
+
 Last updated: 2026-09-29.

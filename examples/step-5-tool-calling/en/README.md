@@ -340,4 +340,17 @@ To integrate your own tool, update the name and schema in `TOOL`, the dispatch a
 
 API reference: [StepFun tool calling](https://platform.stepfun.ai/docs/en/api-reference/tool-call).
 
+## 7. Companion code and starter project
+
+This example includes a Jupyter Notebook, an editable Python script, and a starter project for running and adapting the code. Browse the [example directory](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-tool-calling) for all files, or see the [setup and launch guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/README.md) for instructions.
+
+| Resource | How to use it |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/03_Step5_%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8.ipynb) | Work through the example cell by cell and inspect the inputs and results at each step. |
+| [Python example script](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/tool_demo.py) | Run the minimal example or full experiment from a terminal, or adapt the code for your application. |
+| [macOS launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/%E5%90%AF%E5%8A%A8.command) · [Windows launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/%E5%90%AF%E5%8A%A8.bat) · [launcher menu](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/launcher.py) | Prepare the runtime, then choose the minimal example or full experiment and the API region. |
+| [Environment configuration](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-tool-calling/setup) · [locked dependencies](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-tool-calling/setup/requirements.lock) | Inspect the setup scripts, dependency versions, and environment checks. |
+
+To use the launchers, obtain the complete example directory from the current repository and keep its relative paths intact. Initial setup requires an internet connection. The supplied Notebook, Python script, launch menu, and setup guide currently follow the Chinese version. To reproduce this guide's English prompts, sample inputs, and result fields, use the Python code blocks in this guide.
+
 Last updated: 2026-09-29.

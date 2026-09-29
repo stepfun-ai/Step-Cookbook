@@ -311,4 +311,18 @@ Place your images in `ASSET_DIR`, then add their filenames and known reference a
 
 Model and image-input reference: [Step 5 Preview](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview). The three sample images are demonstration assets generated for this project.
 
+## 7. Companion code and starter project
+
+This example includes a Jupyter Notebook, an editable Python script, and a starter project for running and adapting the code. Browse the [example directory](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-vision-structured) for all files, or see the [setup and launch guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/README.md) for instructions.
+
+| Resource | How to use it |
+| --- | --- |
+| [Jupyter Notebook](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/02_Step5_%E5%9B%BE%E5%83%8F%E7%90%86%E8%A7%A3%E4%B8%8E%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA.ipynb) | Work through the example cell by cell and inspect the inputs and results at each step. |
+| [Python example script](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/vision_demo.py) | Run the minimal example or full experiment from a terminal, or adapt the code for your application. |
+| [macOS launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/%E5%90%AF%E5%8A%A8.command) · [Windows launcher](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/%E5%90%AF%E5%8A%A8.bat) · [launcher menu](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/launcher.py) | Prepare the runtime, then choose the minimal example or full experiment and the API region. |
+| [Environment configuration](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-vision-structured/setup) · [locked dependencies](https://github.com/stepfun-ai/Step-Cookbook/blob/main/examples/step-5-vision-structured/setup/requirements.lock) | Inspect the setup scripts, dependency versions, and environment checks. |
+| [Sample table images](https://github.com/stepfun-ai/Step-Cookbook/tree/main/examples/step-5-vision-structured/assets/vision) | Use the clear, missing-value, and modified tables to reproduce the extraction and validation examples. |
+
+To use the launchers, obtain the complete example directory from the current repository and keep its relative paths intact. Initial setup requires an internet connection. The supplied Notebook, Python script, launch menu, and setup guide currently follow the Chinese version. To reproduce this guide's English prompts, sample inputs, and result fields, use the Python code blocks in this guide.
+
 Last updated: 2026-09-29.
