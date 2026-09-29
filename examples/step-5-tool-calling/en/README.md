@@ -2,8 +2,6 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
-> Both language versions use the same sample inputs, parameters, and checking rules. Chinese prompts, string literals, and output fields in the code are preserved so that runs remain comparable.
-
 ## 1. Understand the model and tool calling
 
 Step 5 Preview accepts messages and generates replies, and it can also request tool calls in its response. An application supplies descriptions of available functions in `tools`. The model returns a function name and arguments, the application executes the function and sends back the result, and the model continues from there. [Model overview](https://platform.stepfun.com/docs/zh/guides/models/step-5-preview) · [Tool-calling protocol](https://platform.stepfun.ai/docs/en/api-reference/tool-call)
@@ -18,13 +16,10 @@ This guide is for developers who write Python functions and want to connect a mo
 
 ### 2.1 Prerequisites
 
-**Required knowledge:** Python functions, dictionaries, and JSON, plus a basic understanding of the request–response flow. No specific application framework is required.
+**Required knowledge:** Familiarity with Python functions, dictionaries, and JSON.
 
-**You will need:**
-
-- Python 3.10 or later, a terminal, and a code editor of your choice.
-- A [StepFun Platform](https://platform.stepfun.com/) account with an API key and access to `step-5-preview`.
-- Network access to the API for your selected region. Live requests consume your account quota.
+- Python 3.10 or later.
+- A StepFun API key with access to `step-5-preview`.
 
 ### 2.2 Create a Python environment
 
@@ -52,13 +47,27 @@ After activation, confirm the Python version with the following command. All sub
 python --version
 ```
 
-### 2.3 Install dependencies
+### 2.3 Dependencies
 
-The request and file-handling code uses the Python standard library, so no third-party SDK is required. If your project already uses another HTTP client, you can keep it and use the request bodies shown here.
+This example uses only the Python standard library.
 
 ### 2.4 Configure credentials and run the example
 
-The code reads the `STEPFUN_API_KEY` environment variable. Set it in your IDE's run configuration or your service's deployment environment. If it is not set locally, the code prompts for the key in the terminal with input hidden. You do not need to store the key in source code.
+Set `STEP_API_KEY` in the terminal that will run the example. Replace `YOUR_STEP_API_KEY` with your API key.
+
+macOS / Linux:
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+If the variable is unset, the script prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -67,8 +76,6 @@ Create `tool_demo.py` in your project and **copy this guide's Python code blocks
 ```bash
 python tool_demo.py
 ```
-
-The code is organized into connection configuration, capability parameters, calls, and result handling. To integrate it into an existing project, reuse the functions in these groups and call them from your application entry point. The companion `.ipynb` provides an optional interactive format for the same code; the Python file contains the complete execution path for this guide.
 
 ### 2.5 Initialize the connection and credentials
 
@@ -87,11 +94,11 @@ BASE_URLS = {"cn": "https://api.stepfun.com/v1", "global": "https://api.stepfun.
 REGION = "cn"
 
 def get_key() -> str:
-    key = os.environ.get("STEPFUN_API_KEY", "").strip()
+    key = os.environ.get("STEP_API_KEY", "").strip()
     if not key:
-        key = getpass.getpass("输入 StepFun API 密钥（隐藏输入，不保存到文件）：").strip()
+        key = getpass.getpass("Enter your StepFun API key (input hidden): ").strip()
     if not key:
-        raise ValueError("未提供密钥，已停止。")
+        raise ValueError("No API key provided.")
     return key
 
 import math
@@ -118,9 +125,9 @@ def post(payload: dict, key: str, region: str = "cn", path: str = "/chat/complet
             content_type = response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as exc:
         # Do not write request headers or raw server errors to result files.
-        raise RuntimeError(f"HTTP {exc.code}：核对区域、权限、额度及请求字段；本例不自动重试。") from None
+        raise RuntimeError(f"HTTP {exc.code}: Check the region, permissions, quota, and request fields. This example does not retry automatically.") from None
     except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError(f"网络连接失败或超过 {HTTP_TIMEOUT_SECONDS} 秒；本次停止。") from None
+        raise RuntimeError(f"Connection failed or a network operation exceeded the {HTTP_TIMEOUT_SECONDS}-second timeout.") from None
     elapsed = time.perf_counter() - start
     return body, elapsed, content_type
 ```
@@ -132,7 +139,7 @@ def chat(payload: dict, key: str, region: str = "cn") -> tuple[dict, float]:
     body, elapsed, _ = post(payload, key, region)
     data = json.loads(body)
     if not isinstance(data, dict) or not data.get("choices"):
-        raise ValueError("响应没有 choices，不能作为一次成功生成。")
+        raise ValueError("The response is missing a nonempty choices array.")
     return data, elapsed
 
 def response_record(data: dict) -> dict:
@@ -160,7 +167,7 @@ api_key = get_key()
 
 ```python
 TOOL = {"type": "function", "function": {"name": "calculate",
-    "description": "对两个有限数值做加法或除法。需要算术运算时使用；不处理问候。除数不能为零。",
+    "description": "Add or divide two finite numbers. Use for arithmetic, not greetings. The divisor must be nonzero.",
     "parameters": {"type": "object", "properties": {
         "operation": {"type": "string", "enum": ["add", "divide"]},
         "a": {"type": "number"}, "b": {"type": "number"}},
@@ -175,21 +182,21 @@ TOOL = {"type": "function", "function": {"name": "calculate",
 def execute(name, arguments):
     try:
         if name != "calculate":
-            raise ValueError("未知工具")
+            raise ValueError("Unknown tool.")
         args = json.loads(arguments)
         if not isinstance(args, dict) or set(args) != {"operation", "a", "b"}:
-            raise ValueError("必须提供 operation、a、b，且不能有额外字段")
+            raise ValueError("Provide exactly operation, a, and b; no additional fields are allowed.")
         a, b = args["a"], args["b"]
         if any(type(v) not in (int, float) or not math.isfinite(v) or abs(v) > 1e12 for v in [a, b]):
-            raise ValueError("两个操作数必须为绝对值不超过 1e12 的有限数值")
+            raise ValueError("Both operands must be finite numbers with an absolute value no greater than 1e12.")
         if args["operation"] == "add":
             value = a + b
         elif args["operation"] == "divide" and b != 0:
             value = a / b
         elif args["operation"] == "divide":
-            return {"ok": False, "error": "除数不能为零"}
+            return {"ok": False, "error": "The divisor must be nonzero."}
         else:
-            raise ValueError("operation 仅支持 add 或 divide")
+            raise ValueError("operation must be add or divide.")
         return {"ok": True, "value": value}
     except (ValueError, TypeError, OverflowError) as exc:
         return {"ok": False, "error": str(exc)}
@@ -211,7 +218,7 @@ def finish_tool_result(task, choice, calls, trace):
         if task["needs_tool"]:
             same = type(answer) in (int, float) and answer == task["answer"]
         else:
-            same = isinstance(answer, str) and answer.strip().startswith("你好")
+            same = isinstance(answer, str) and answer.strip().casefold().startswith(task["answer"].casefold())
     except (ValueError, TypeError, KeyError):
         same = False
     behavior = bool(calls) == task["needs_tool"]
@@ -230,7 +237,7 @@ TOOL_OPTIONS = {"tool_choice": "auto", "max_rounds": 5, "max_tool_calls": 8}
 def run_loop(task, call_api, model="step-5-preview", max_rounds=5,
              tool_choice="auto", max_tool_calls=8):
     messages = [
-        {"role": "system", "content": "需要算术运算时使用 calculate 工具，不能声称执行未调用的工具。工具失败时如实说明。最终回答仅输出 JSON 对象，包含 answer 和 explanation；answer 是数值、问候字符串或无法完成时的 null。"},
+        {"role": "system", "content": "Use the calculate tool for arithmetic. Claim a tool execution only when it actually occurred, and report tool failures accurately. Return only a JSON object with answer and explanation fields. Set answer to a number, a greeting string, or null if the task cannot be completed."},
         {"role": "user", "content": task["text"]},
     ]
     trace, calls = [], []
@@ -246,22 +253,22 @@ def run_loop(task, call_api, model="step-5-preview", max_rounds=5,
         if not requested:
             return finish_tool_result(task, choice, calls, trace)
         if choice.get("finish_reason") not in ("tool_calls", "stop"):
-            raise RuntimeError("工具调用响应未完整结束")
+            raise RuntimeError("The tool-calling response did not complete normally.")
         if len(requested) > 4 or len(calls) + len(requested) > max_tool_calls:
-            raise RuntimeError("本次请求超过工具调用预算")
+            raise RuntimeError("The tool-call limit was exceeded.")
         assistant = {k: message[k] for k in ("role", "content", "tool_calls", "reasoning_content") if k in message}
         assistant["role"] = "assistant"
         messages.append(assistant)
         for item in requested:
             if not item.get("id") or not isinstance(item.get("function"), dict):
-                raise ValueError("工具调用缺少标识或函数参数")
+                raise ValueError("A tool call is missing its ID or function details.")
             function = item["function"]
             result = execute(function.get("name"), function.get("arguments"))
             calls.append({"id": item["id"], "name": function.get("name"),
                           "arguments": function.get("arguments"), "result": result})
             messages.append({"role": "tool", "tool_call_id": item["id"],
                              "content": json.dumps(result, ensure_ascii=False)})
-    raise RuntimeError("达到模型请求轮数上限")
+    raise RuntimeError("The maximum number of model-request rounds was reached.")
 ```
 
 After the model selects a tool, the program appends the original assistant message, then the result with its matching `tool_call_id`. This order allows the next request to associate the result with the correct call. Network errors propagate to the calling entry point, where your application decides how to handle them.
@@ -272,7 +279,7 @@ Ask the model to add 18 and 6, then divide by 4. The final result should be 6. T
 
 ```python
 MODEL = "step-5-preview"
-task = {"text": "请用工具计算 (18 + 6) / 4。", "answer": 6, "needs_tool": True}
+task = {"text": "Use the tool to calculate (18 + 6) / 4.", "answer": 6, "needs_tool": True}
 call_api = lambda payload: chat(payload, api_key, REGION)
 result = run_loop(task, call_api, model=MODEL, **TOOL_OPTIONS)
 print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -291,23 +298,23 @@ print(json.dumps(result, ensure_ascii=False, indent=2))
 Send a simple greeting to observe the `auto` strategy. When a task needs no calculation, the model can return a final answer directly.
 
 ```python
-greeting_task = {"text": "你好。请只回复问候，不调用计算工具。", "answer": "你好", "needs_tool": False}
+greeting_task = {"text": "Say hello without calling the calculation tool.", "answer": "Hello", "needs_tool": False}
 greeting = run_loop(greeting_task, call_api, model=MODEL, **TOOL_OPTIONS)
 print(json.dumps(greeting, ensure_ascii=False, indent=2))
 ```
 
-The greeting result should have an empty `tool_calls` list; its wording may vary. The check asks whether the task needs a tool and whether the model acts accordingly.
+The greeting result should have an empty `tool_calls` list and an `answer` starting with "Hello", ignoring case. The check verifies both the greeting and the absence of tool calls.
 
 ## 5. Inspect actual execution records
 
 For the calculation task, check three things together: the final value is 6, the tool was actually executed, and the execution results support that value. The following code extracts those details and saves the full trace so you can track calls in your own project.
 
 ```python
-print("最终回答：", result.get("final"))
-print("实际工具调用次数：", len(result["tool_calls"]))
+print("Final answer:", result.get("final"))
+print("Executed tool calls:", len(result["tool_calls"]))
 for item in result["tool_calls"]:
     print(item["name"], item["arguments"], "→", item["result"])
-print("是否符合这条任务的要求：", result["success"])
+print("Task requirements met:", result["success"])
 output_dir = Path("tool_results")
 output_dir.mkdir(exist_ok=True)
 save_json(output_dir / "calculation.json", result)
@@ -321,7 +328,7 @@ Each elapsed time in `trace` measures the full model response. Tool execution he
 First change the input to (20 + 8) / 4, update the reference answer to 7, and run the existing loop.
 
 ```python
-my_task = {"text": "请用工具计算 (20 + 8) / 4。", "answer": 7, "needs_tool": True}
+my_task = {"text": "Use the tool to calculate (20 + 8) / 4.", "answer": 7, "needs_tool": True}
 my_result = run_loop(my_task, call_api, model=MODEL, **TOOL_OPTIONS)
 print(json.dumps(my_result, ensure_ascii=False, indent=2))
 save_json(output_dir / "my_task.json", my_result)
@@ -331,4 +338,4 @@ To integrate your own tool, update the name and schema in `TOOL`, the dispatch a
 
 API reference: [StepFun tool calling](https://platform.stepfun.ai/docs/en/api-reference/tool-call).
 
-Last updated: 2026-09-27. The code runs in a standard Python project; the companion Notebook is an optional format with the same content. Model identifiers and API field names remain in English.
+Last updated: 2026-09-28.

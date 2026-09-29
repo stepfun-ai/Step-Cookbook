@@ -2,11 +2,9 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
-> Both language versions use the same sample inputs, parameters, and checking rules. Chinese prompts, string literals, and output fields in the code are preserved so that runs remain comparable.
-
 ## 1. Understand text-to-speech and personalized voices
 
-StepAudio 3 TTS converts text into speech: your application supplies the text and voice configuration, and the API returns synthesized audio. It supports both standard and streaming synthesis. This guide uses standard HTTP synthesis to save complete WAV files that are easy to integrate, play, and compare. [Model overview](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-tts)
+StepAudio 3 TTS converts text into speech: your application supplies the text and voice configuration, and the API returns synthesized audio. It supports both non-streaming and streaming synthesis. This guide uses non-streaming synthesis to save complete WAV files for playback and comparison. [Model overview](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-tts)
 
 The parameters have distinct roles: `voice` selects the voice identity, `speed` controls speaking rate, and `pronunciation_map` specifies how target words are pronounced. To use a personalized voice, first create it from a reference recording and its transcript, then pass it as `voice` in a synthesis request. [Speech synthesis API](https://platform.stepfun.ai/docs/en/api-reference/audio/create-audio)
 
@@ -18,13 +16,10 @@ This guide is for Python developers who need to generate speech in an applicatio
 
 ### 2.1 Prerequisites
 
-**Required knowledge:** Python functions, dictionaries, and JSON, plus a basic understanding of the request–response flow. No specific application framework is required.
+**Required knowledge:** Familiarity with Python functions, dictionaries, and JSON.
 
-**You will need:**
-
-- Python 3.10 or later, a terminal, and a code editor of your choice.
-- A [StepFun Platform](https://platform.stepfun.com/) account with an API key and access to `stepaudio-3-tts`.
-- Network access to the API for your selected region. Live requests consume your account quota.
+- Python 3.10 or later.
+- A StepFun API key with access to `stepaudio-3-tts`.
 - Reference audio: save the supplied WAV and transcript under `assets/voice_reference/` in your project for the personalized voice section.
 
 ### 2.2 Create a Python environment
@@ -53,13 +48,27 @@ After activation, confirm the Python version with the following command. All sub
 python --version
 ```
 
-### 2.3 Install dependencies
+### 2.3 Dependencies
 
-The request and file-handling code uses the Python standard library, so no third-party SDK is required. If your project already uses another HTTP client, you can keep it and use the request bodies shown here.
+This example uses only the Python standard library.
 
 ### 2.4 Configure credentials and run the example
 
-The code reads the `STEPFUN_API_KEY` environment variable. Set it in your IDE's run configuration or your service's deployment environment. If it is not set locally, the code prompts for the key in the terminal with input hidden. You do not need to store the key in source code.
+Set `STEP_API_KEY` in the terminal that will run the example. Replace `YOUR_STEP_API_KEY` with your API key.
+
+macOS / Linux:
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+If the variable is unset, the script prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -68,8 +77,6 @@ Create `tts_demo.py` in your project and **copy this guide's Python code blocks 
 ```bash
 python tts_demo.py
 ```
-
-The code is organized into connection configuration, capability parameters, calls, and result handling. To integrate it into an existing project, reuse the functions in these groups and call them from your application entry point. The companion `.ipynb` provides an optional interactive format for the same code; the Python file contains the complete execution path for this guide.
 
 ### 2.5 Initialize the connection and credentials
 
@@ -88,11 +95,11 @@ BASE_URLS = {"cn": "https://api.stepfun.com/v1", "global": "https://api.stepfun.
 REGION = "cn"
 
 def get_key() -> str:
-    key = os.environ.get("STEPFUN_API_KEY", "").strip()
+    key = os.environ.get("STEP_API_KEY", "").strip()
     if not key:
-        key = getpass.getpass("输入 StepFun API 密钥（隐藏输入，不保存到文件）：").strip()
+        key = getpass.getpass("Enter your StepFun API key (input hidden): ").strip()
     if not key:
-        raise ValueError("未提供密钥，已停止。")
+        raise ValueError("No API key provided.")
     return key
 
 import io
@@ -103,7 +110,7 @@ import uuid
 
 ### 2.6 Set the HTTP timeout and read responses
 
-The following `post()` function is the shared request helper for this guide. `HTTP_TIMEOUT_SECONDS` is a client setting that limits the wait for a network operation; configure it separately from reasoning effort or output length. The function returns the response bytes, the elapsed time through the end of the response read, and the content type.
+The `post()` helper sends an HTTP request and returns the response bytes, full-response time, and content type. `HTTP_TIMEOUT_SECONDS` sets the timeout for blocking network operations.
 
 ```python
 HTTP_TIMEOUT_SECONDS = 90
@@ -122,9 +129,9 @@ def post(payload: dict, key: str, region: str = "cn", path: str = "/chat/complet
             content_type = response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as exc:
         # Do not write request headers or raw server errors to result files.
-        raise RuntimeError(f"HTTP {exc.code}：核对区域、权限、额度及请求字段；本例不自动重试。") from None
+        raise RuntimeError(f"HTTP {exc.code}: Check the region, permissions, quota, and request fields. This example does not retry automatically.") from None
     except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError(f"网络连接失败或超过 {HTTP_TIMEOUT_SECONDS} 秒；本次停止。") from None
+        raise RuntimeError(f"Connection failed or a network operation exceeded the {HTTP_TIMEOUT_SECONDS}-second timeout.") from None
     elapsed = time.perf_counter() - start
     return body, elapsed, content_type
 
@@ -138,46 +145,46 @@ def save_json(path: Path, value) -> None:
 api_key = get_key()
 ```
 
-The synthesis model is `stepaudio-3-tts`, and the initial preset voice is `zixinnansheng`. The personalized voice section uploads the supplied recording, creates a voice in your account, and synthesizes new text. Each stage uses quota according to the platform's rules. For model and billing details, see [StepAudio 3 TTS](https://platform.stepfun.com/docs/zh/guides/models/stepaudio-3-tts).
+The synthesis model is `stepaudio-3-tts`, and the initial preset voice is `zixinnansheng`. The personalized voice section uploads the supplied recording, creates a voice in your account, and synthesizes new text. For model details, see [StepAudio 3 TTS](https://platform.stepfun.com/docs/zh/guides/models/stepaudio-3-tts).
 
 ## 3. Generate an audio clip
 
 ### 3.1 Prepare the text and request
 
-The sample sentence contains “重庆” (Chongqing) and “银行” (bank), allowing you to observe both speaking rate and context-dependent character pronunciation. Start at the default rate, then change one parameter at a time.
+The sample sentence contains the abbreviation "LOL". Compare speaking rates, then use a pronunciation override to replace the abbreviation with a spoken phrase. Change one parameter at a time.
 
 ```python
 MODEL = "stepaudio-3-tts"
 VOICE = "zixinnansheng"
-TEXT = "重庆的银行今天营业。请保持自然的语速。"
+TEXT = "The message says LOL, and everyone smiles."
 OUTPUT_DIR = Path("tts_results")
 OUTPUT_DIR.mkdir(exist_ok=True)
 ```
 
-**Parameter group: voice, speaking rate, and pronunciation overrides.** Set `voice` to a preset or personalized voice ID available to your account. `speed` ranges from 0.5 to 2.0, with a starting value of 1.0. This example fixes `language="zh"` and `response_format="wav"` so language and file format remain consistent across comparisons.
+**Parameter group: voice, speaking rate, and pronunciation overrides.** Set `voice` to a preset or personalized voice ID available to your account. `speed` ranges from 0.5 to 2.0, with a starting value of 1.0. This example fixes `language="en"` and `response_format="wav"` so language and file format remain consistent across comparisons.
 
 ```python
 VARIANTS = {"baseline": {}, "slow": {"speed": 0.8}, "fast": {"speed": 1.2},
-            "pronunciation": {"pronunciation_map": {"tone": ["重/chong2", "行/hang2"]}}}
+            "pronunciation": {"pronunciation_map": {"tone": ["LOL/laugh out loudly"]}}}
 
 def request_for(text, voice, variant, model="stepaudio-3-tts"):
     if not 1 <= len(text) <= 1000:
-        raise ValueError("本篇每次合成 1–1000 个字符。")
+        raise ValueError("Each request in this example must contain 1-1000 characters.")
     if not voice.strip():
-        raise ValueError("请指定当前账号可用的音色 ID。")
-    return {"model": model, "input": text, "voice": voice, "language": "zh",
+        raise ValueError("Specify a voice ID available to your account.")
+    return {"model": model, "input": text, "voice": voice, "language": "en",
             "response_format": "wav", "speed": 1.0, **VARIANTS[variant]}
 ```
 
-When changing `speed`, keep the text and `voice` fixed. When changing `voice`, keep the rate fixed. Numbers in `pronunciation_map.tone` indicate tones; the target pronunciations are sent with the request. The following function reads WAV metadata to confirm the returned format and duration.
+When changing `speed`, keep the text and `voice` fixed. When changing `voice`, keep the rate fixed. Each entry in `pronunciation_map.tone` uses `source/replacement` syntax; `LOL/laugh out loudly` specifies the spoken replacement for "LOL". The following function reads WAV metadata to confirm the returned format and duration.
 
 ```python
 def inspect_wav(raw):
     if raw[:4] != b"RIFF" or raw[8:12] != b"WAVE":
-        raise ValueError("返回内容不是可识别的 WAV；未保存成音频。")
+        raise ValueError("The response is not a recognized WAV file; no audio file was saved.")
     with wave.open(io.BytesIO(raw), "rb") as wav:
         if wav.getnframes() <= 0:
-            raise ValueError("返回音频没有采样帧。")
+            raise ValueError("The returned audio contains no sample frames.")
         return {"duration_seconds": wav.getnframes()/wav.getframerate(),
                 "sample_rate": wav.getframerate(), "channels": wav.getnchannels(), "sample_width": wav.getsampwidth()}
 ```
@@ -209,17 +216,17 @@ Open `tts_results/baseline.wav` in your system's audio player to hear the synthe
 
 ### 4.1 Compare speaking rate and pronunciation controls
 
-The following two blocks focus on `speed` and `pronunciation_map`, changing one setting at a time. `slow` sets the rate to 0.8, and `fast` sets it to 1.2. `pronunciation` keeps the default rate and uses `pronunciation_map` to specify the readings of “重” and “行”.
+The following two blocks focus on `speed` and `pronunciation_map`, changing one setting at a time. `slow` sets the rate to 0.8, and `fast` sets it to 1.2. `pronunciation` keeps the default rate and uses `pronunciation_map` to specify a spoken replacement for "LOL".
 
 **First compare `speed`.** Synthesize the same sentence at 0.8 and 1.2, then compare file duration and the rhythm you hear.
 
 ```python
 variants = [synthesize(TEXT, VOICE, name, name) for name in ["slow", "fast"]]
 for row in variants:
-    print(row["file"], round(row["duration_seconds"], 2), "秒")
+    print(row["file"], round(row["duration_seconds"], 2), "seconds")
 ```
 
-**Then compare `pronunciation_map`.** Use the default rate and override only the pronunciations of “重” and “行”. Compare the generated file with `baseline.wav` to hear whether the target words use the specified readings.
+**Then compare `pronunciation_map`.** Use the default rate and override only "LOL". Compare the generated file with `baseline.wav` and check whether the abbreviation is spoken as "laugh out loudly".
 
 ```python
 pronunciation = synthesize(TEXT, VOICE, "pronunciation", "pronunciation")
@@ -256,9 +263,9 @@ def inspect_reference(path):
         meta = {"seconds": wav.getnframes()/wav.getframerate(), "sample_rate": wav.getframerate(),
                 "channels": wav.getnchannels(), "sample_width": wav.getsampwidth()}
     if not 5 <= meta["seconds"] <= 10:
-        raise ValueError("参考 WAV 需要 5–10 秒。")
+        raise ValueError("The reference WAV must be 5-10 seconds long.")
     if meta["channels"] != 1 or meta["sample_width"] != 2:
-        raise ValueError("本例采用单声道 16 位 PCM WAV。")
+        raise ValueError("This example requires a mono, 16-bit PCM WAV file.")
     return meta
 
 def upload_body(audio):
@@ -284,9 +291,9 @@ def send(path, data, content_type):
         with urllib.request.urlopen(request, timeout=HTTP_TIMEOUT_SECONDS) as response:
             raw = response.read()
     except urllib.error.HTTPError as exc:
-        raise RuntimeError(f"HTTP {exc.code}：请核对区域、权限和请求字段。") from None
+        raise RuntimeError(f"HTTP {exc.code}: Check the region, permissions, and request fields.") from None
     except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError("网络连接失败或超时，本次停止。") from None
+        raise RuntimeError("Connection failed or a network operation timed out.") from None
     return raw, time.perf_counter() - start
 ```
 
@@ -313,7 +320,7 @@ fingerprint = {"audio_sha256": hashlib.sha256(reference_audio).hexdigest(),
 state = (json.loads(STATE_FILE.read_text(encoding="utf-8"))
          if STATE_FILE.exists() else {"input": fingerprint})
 if state.get("input") != fingerprint:
-    raise ValueError("参考输入已改变，请为新录音设置另一个 STATE_DIR。")
+    raise ValueError("The reference input has changed. Use a different STATE_DIR for the new input.")
 ```
 
 ### 4.4 Upload the original recording
@@ -326,7 +333,7 @@ if not state.get("file_id"):
     raw, upload_seconds = send("/files", body, content_type)
     state["file_id"] = json.loads(raw)["id"]
     save_json(STATE_FILE, state)
-print("参考文件已准备。")
+print("The reference file is ready.")
 ```
 
 ### 4.5 Create a voice from the recording and transcript
@@ -339,7 +346,7 @@ if not state.get("voice_id"):
     raw, clone_seconds = send("/audio/voices", json.dumps(payload).encode("utf-8"), "application/json")
     state["voice_id"] = json.loads(raw)["id"]
     save_json(STATE_FILE, state)
-print("个性化音色已准备。")
+print("The personalized voice is ready.")
 ```
 
 ### 4.6 Synthesize new text with the personalized voice
@@ -371,10 +378,10 @@ The following code saves the preset-voice comparison records. `generation_to_aud
 all_records = [baseline, *variants]
 save_json(OUTPUT_DIR / "records.json", all_records)
 for row in all_records:
-    print({"文件": row["file"], "完整请求耗时_秒": round(row["elapsed_seconds"], 2),
-           "音频时长_秒": round(row["duration_seconds"], 2),
-           "生成耗时与音频时长之比": round(row["generation_to_audio_duration"], 2),
-           "采样率": row["sample_rate"]})
+    print({"file": row["file"], "full_request_seconds": round(row["elapsed_seconds"], 2),
+           "audio_duration_seconds": round(row["duration_seconds"], 2),
+           "generation_to_audio_duration": round(row["generation_to_audio_duration"], 2),
+           "sample_rate": row["sample_rate"]})
 ```
 
 For each clip, listen for omissions, repetition, truncation, and the expected pronunciation of target words. Keep text and voice fixed when comparing rates. Keep text, rate, and pronunciation settings fixed when comparing voices. Each record retains its request parameters so you can synthesize the clip again.
@@ -385,4 +392,4 @@ For a preset voice, replace `TEXT` and `VOICE` and reuse `synthesize()`. For a p
 
 If the reference voice and target text are Chinese, set the corresponding language to `zh` and supply a Chinese transcript that matches the recording word for word. In your application, play the result at the actual sample rate stored in the WAV file. Retain the new voice ID and input version so you can regenerate audio under the same account.
 
-Last updated: 2026-09-27. The code runs in a standard Python project; the companion Notebook is an optional format with the same content. Model identifiers and API field names remain in English.
+Last updated: 2026-09-28.

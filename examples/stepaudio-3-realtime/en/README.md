@@ -2,8 +2,6 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
-> Both language versions use the same sample inputs, parameters, and checking rules. Chinese prompts, string literals, and output fields in the code are preserved so that runs remain comparable.
-
 ## 1. Understand realtime voice models and conversation turns
 
 StepAudio 3 Realtime supports two-way realtime voice interaction. It receives audio over a persistent WebSocket connection and returns text and audio events. The service handles speech understanding, turn management, and responses within one session, and allows the user to start speaking again while the assistant is talking. [Model overview](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-realtime)
@@ -20,11 +18,8 @@ This guide uses `stepaudio-3-realtime-preview` to implement a minimal voice conv
 
 **Required knowledge:** Python functions, dictionaries, and JSON, plus a basic understanding of the request–response flow. The audio implementation also uses callbacks and queues; this guide explains their roles in recording and playback.
 
-**You will need:**
-
-- Python 3.10 or later, a terminal, and a code editor of your choice.
-- A [StepFun Platform](https://platform.stepfun.com/) account with an API key and access to `stepaudio-3-realtime-preview`.
-- Network access to the API for your selected region. Live requests consume your account quota.
+- Python 3.10 or later.
+- A StepFun API key with access to `stepaudio-3-realtime-preview`.
 - Audio devices: a microphone and headphones, with microphone access granted to your terminal or IDE.
 
 ### 2.2 Create a Python environment
@@ -65,7 +60,21 @@ If PortAudio is missing, install the required system component according to the 
 
 ### 2.4 Configure credentials and run the example
 
-The code reads the `STEPFUN_API_KEY` environment variable. Set it in your IDE's run configuration or your service's deployment environment. If it is not set locally, the code prompts for the key in the terminal with input hidden. You do not need to store the key in source code.
+Set `STEP_API_KEY` in the terminal that will run the example. Replace `YOUR_STEP_API_KEY` with your API key.
+
+macOS / Linux:
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+If the variable is unset, the script prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -74,8 +83,6 @@ Create `realtime_demo.py` in your project and **copy this guide's Python code bl
 ```bash
 python realtime_demo.py
 ```
-
-The code is organized into connection configuration, capability parameters, calls, and result handling. To integrate it into an existing project, reuse the functions in these groups and call them from your application entry point. The companion `.ipynb` provides an optional interactive format for the same code; the Python file contains the complete execution path for this guide.
 
 ### 2.5 Configure the connection and audio devices
 
@@ -113,7 +120,7 @@ sd.check_input_settings(device=AUDIO_CONFIG["input_device"], channels=1,
                         dtype="int16", samplerate=AUDIO_CONFIG["input_rate"])
 sd.check_output_settings(device=AUDIO_CONFIG["output_device"], channels=1,
                          dtype="int16", samplerate=AUDIO_CONFIG["output_rate"])
-print("设备接受当前音频格式。")
+print("The selected devices support the configured audio format.")
 ```
 
 ## 3. Configure a session and complete a conversation
@@ -132,7 +139,7 @@ Change one VAD parameter at a time while keeping the device and spoken input fix
 
 ```python
 ASSISTANT_CONFIG = {
-    "instructions": "你是实时语音助手。请用用户的语言简短回答；不确定时明确说明。",
+    "instructions": "You are a real-time voice assistant. Respond briefly in the user's language and state any uncertainty clearly.",
     "voice": "jingdiannvsheng",
 }
 VAD_CONFIG = {"prefix_padding_ms": 500, "silence_duration_ms": 100,
@@ -176,7 +183,7 @@ class AudioBuffers:
             self.queue.put_nowait(bytes(indata))
         except queue.Full:
             self.stopping.set()
-            print("发送队列已满，本次会话停止。")
+            print("The send queue is full. Stopping the session.")
 
     def render(self, outdata, frames, time_info, status):
         size = frames * 2  # Mono PCM16: two bytes per frame.
@@ -242,7 +249,7 @@ def send_microphone(session):
             session.ws.send(json.dumps(make_event("input_audio_buffer.append",
                 audio=base64.b64encode(chunk).decode("ascii"))))
     except Exception as exc:
-        session.errors.append(str(exc).replace(session.key, "[已隐藏]"))
+        session.errors.append(str(exc).replace(session.key, "[REDACTED]"))
         session.stopping.set()
     finally:
         if session.stopping.is_set():
@@ -261,15 +268,15 @@ def handle_turn(session, event):
         session.stopped_at = None
         session.audio.clear()
         session.discarded.update(session.active)
-        print("用户开始说话")
+        print("User speech started.")
     elif kind == "input_audio_buffer.speech_stopped":
         session.speech_stops += 1
         session.stopped_at = time.monotonic()
-        print("用户说话结束，等待回复")
+        print("User speech stopped. Waiting for a response.")
     elif kind == "conversation.item.input_audio_transcription.completed":
         transcript = event.get("transcript", "")
         session.transcripts.append(transcript)
-        print("用户：", transcript)
+        print("User:", transcript)
     else:
         return False
     return True
@@ -295,14 +302,14 @@ def handle_response(session, event):
         session.active.discard(rid)
         session.discarded.discard(rid)
         session.caption_started.discard(rid)
-        print("本轮结束：", response.get("status"))
+        print("Response completed:", response.get("status"))
         return
     if kind not in {"response.audio.delta", "response.audio_transcript.delta",
                     "response.audio_transcript.done"}:
         return
     rid = event.get("response_id")
     if not rid:
-        raise ValueError("响应缺少 response_id")
+            raise ValueError("The response event is missing response_id.")
     if rid not in session.active or rid in session.discarded:
         return
     if kind == "response.audio_transcript.delta":
@@ -315,7 +322,7 @@ def handle_response(session, event):
         if not raw:
             return
         if len(raw) % 2:
-            raise ValueError("PCM16 分块必须包含完整采样帧")
+            raise ValueError("PCM16 chunks must contain complete sample frames.")
         with session.audio.lock:
             session.audio.playback.extend(raw)
         session.chunks[rid] += 1
@@ -343,11 +350,11 @@ def on_event(session, ws, message):
             session.sender.start()
         elif kind == "error":
             detail = event.get("error", {})
-            raise RuntimeError(str(detail.get("message", "会话接口返回错误")))
+            raise RuntimeError(str(detail.get("message", "The session API returned an error.")))
         elif not handle_turn(session, event):
             handle_response(session, event)
     except Exception as exc:
-        session.errors.append(str(exc).replace(session.key, "[已隐藏]"))
+        session.errors.append(str(exc).replace(session.key, "[REDACTED]"))
         session.stopping.set()
         ws.close()
 
@@ -356,7 +363,7 @@ def run_socket(session):
     try:
         session.ws.run_forever(ping_interval=20, ping_timeout=10)
     except Exception as exc:
-        session.errors.append(str(exc).replace(session.key, "[已隐藏]"))
+        session.errors.append(str(exc).replace(session.key, "[REDACTED]"))
     finally:
         session.stopping.set()
         close_audio(session)
@@ -382,12 +389,12 @@ class RealtimeSession:
     def start(self):
         import websocket
         if self.thread is not None:
-            raise RuntimeError("每轮对话请新建连接对象")
+            raise RuntimeError("Create a new connection object for each session.")
         self.ws = websocket.WebSocketApp(
             f"{ENDPOINTS[REGION]}?model={MODEL}",
             header=["Authorization: Bearer " + self.key],
             on_message=lambda ws, msg: on_event(self, ws, msg),
-            on_error=lambda ws, exc: self.errors.append(str(exc).replace(self.key, "[已隐藏]")),
+            on_error=lambda ws, exc: self.errors.append(str(exc).replace(self.key, "[REDACTED]")),
         )
         self.thread = threading.Thread(target=run_socket, args=(self,), daemon=True)
         self.thread.start()
@@ -420,11 +427,11 @@ def run_session(settings, label, key):
         deadline = time.monotonic() + 15
         while not session.ready.is_set() and not session.stopping.is_set():
             if time.monotonic() >= deadline:
-                raise TimeoutError("等待会话配置确认超时")
+                raise TimeoutError("Timed out waiting for session configuration confirmation.")
             time.sleep(0.05)
         if not session.ready.is_set():
-            raise RuntimeError("会话未就绪：" + "; ".join(session.errors))
-        input("已就绪。请戴耳机对话；结束本组时按 Enter：")
+            raise RuntimeError("The session is not ready: " + "; ".join(session.errors))
+        input("Ready. Use headphones and start speaking. Press Enter to end this session: ")
     finally:
         session.stop()
     return {"label": label, "settings": {"model": MODEL, **settings}, **session.summary()}
@@ -433,9 +440,9 @@ def run_session(settings, label, key):
 
 
 ```python
-api_key = os.environ.get("STEPFUN_API_KEY", "").strip() or getpass.getpass("StepFun API Key（隐藏输入）：").strip()
+api_key = os.environ.get("STEP_API_KEY", "").strip() or getpass.getpass("Enter your StepFun API key (input hidden): ").strip()
 if not api_key:
-    raise ValueError("需要 API Key 才能启动会话")
+    raise ValueError("An API key is required to start the session.")
 ```
 
 
@@ -483,7 +490,7 @@ if RUN_RESULTS:
     result_dir.mkdir(exist_ok=True)
     result_file = result_dir / ("sessions_" + uuid.uuid4().hex[:8] + ".json")
     result_file.write_text(json.dumps(RUN_RESULTS, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("结果文件：", result_file)
+    print("Results file:", result_file)
 ```
 
 Compare transcript completeness, turn events, response statuses, and what you hear. Event counts help explain what happened; playback and natural interruption behavior require an actual conversation on the target device.
@@ -498,4 +505,4 @@ Reuse the code along these boundaries:
 
 First complete a short session with this guide's settings, then change one variable at a time for your pause patterns and devices. Available model names and session formats are governed by the [official model documentation](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-realtime) and your account configuration.
 
-Last updated: 2026-09-27. The code runs in a standard Python project; the companion Notebook is an optional format with the same content. Model identifiers and API field names remain in English.
+Last updated: 2026-09-28.

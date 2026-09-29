@@ -2,9 +2,7 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
-> Both language versions use the same sample inputs, parameters, and checking rules. Chinese prompts, string literals, and output fields in the code are preserved so that runs remain comparable.
-
-## 1. Understand image understanding and structured outputs
+## 1. Image understanding and structured outputs
 
 Step 5 Preview can read text and images in the same message and respond with text. “Multimodal” means that the model can combine different input types. This guide uses its image-understanding capability to read tables. [Model and input types](https://platform.stepfun.com/docs/zh/guides/models/step-5-preview)
 
@@ -18,13 +16,10 @@ This guide is for developers integrating image extraction into Python projects. 
 
 ### 2.1 Prerequisites
 
-**Required knowledge:** Python functions, dictionaries, and JSON, plus a basic understanding of the request–response flow. No specific application framework is required.
+**Required knowledge:** Familiarity with Python functions, dictionaries, and JSON.
 
-**You will need:**
-
-- Python 3.10 or later, a terminal, and a code editor of your choice.
-- A [StepFun Platform](https://platform.stepfun.com/) account with an API key and access to `step-5-preview`.
-- Network access to the API for your selected region. Live requests consume your account quota.
+- Python 3.10 or later.
+- A StepFun API key with access to `step-5-preview`.
 - Sample images: the three PNG files linked below, saved under `assets/vision/` in your project.
 
 ### 2.2 Create a Python environment
@@ -53,13 +48,27 @@ After activation, confirm the Python version with the following command. All sub
 python --version
 ```
 
-### 2.3 Install dependencies
+### 2.3 Dependencies
 
-The request and file-handling code uses the Python standard library, so no third-party SDK is required. If your project already uses another HTTP client, you can keep it and use the request bodies shown here.
+This example uses only the Python standard library.
 
 ### 2.4 Configure credentials and run the example
 
-The code reads the `STEPFUN_API_KEY` environment variable. Set it in your IDE's run configuration or your service's deployment environment. If it is not set locally, the code prompts for the key in the terminal with input hidden. You do not need to store the key in source code.
+Set `STEP_API_KEY` in the terminal that will run the example. Replace `YOUR_STEP_API_KEY` with your API key.
+
+macOS / Linux:
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell:
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+If the variable is unset, the script prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -68,8 +77,6 @@ Create `vision_demo.py` in your project and **copy this guide's Python code bloc
 ```bash
 python vision_demo.py
 ```
-
-The code is organized into connection configuration, capability parameters, calls, and result handling. To integrate it into an existing project, reuse the functions in these groups and call them from your application entry point. The companion `.ipynb` provides an optional interactive format for the same code; the Python file contains the complete execution path for this guide.
 
 ### 2.5 Initialize the connection and credentials
 
@@ -88,11 +95,11 @@ BASE_URLS = {"cn": "https://api.stepfun.com/v1", "global": "https://api.stepfun.
 REGION = "cn"
 
 def get_key() -> str:
-    key = os.environ.get("STEPFUN_API_KEY", "").strip()
+    key = os.environ.get("STEP_API_KEY", "").strip()
     if not key:
-        key = getpass.getpass("输入 StepFun API 密钥（隐藏输入，不保存到文件）：").strip()
+        key = getpass.getpass("Enter your StepFun API key (input hidden): ").strip()
     if not key:
-        raise ValueError("未提供密钥，已停止。")
+        raise ValueError("No API key provided.")
     return key
 
 import base64
@@ -119,9 +126,9 @@ def post(payload: dict, key: str, region: str = "cn", path: str = "/chat/complet
             content_type = response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as exc:
         # Do not write request headers or raw server errors to result files.
-        raise RuntimeError(f"HTTP {exc.code}：核对区域、权限、额度及请求字段；本例不自动重试。") from None
+        raise RuntimeError(f"HTTP {exc.code}: Check the region, permissions, quota, and request fields. This example does not retry automatically.") from None
     except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError(f"网络连接失败或超过 {HTTP_TIMEOUT_SECONDS} 秒；本次停止。") from None
+        raise RuntimeError(f"Connection failed or a network operation exceeded the {HTTP_TIMEOUT_SECONDS}-second timeout.") from None
     elapsed = time.perf_counter() - start
     return body, elapsed, content_type
 ```
@@ -133,7 +140,7 @@ def chat(payload: dict, key: str, region: str = "cn") -> tuple[dict, float]:
     body, elapsed, _ = post(payload, key, region)
     data = json.loads(body)
     if not isinstance(data, dict) or not data.get("choices"):
-        raise ValueError("响应没有 choices，不能作为一次成功生成。")
+        raise ValueError("The response is missing a nonempty choices array.")
     return data, elapsed
 
 def response_record(data: dict) -> dict:
@@ -177,10 +184,10 @@ IMAGES = [
 ]
 for item in IMAGES:
     if not (ASSET_DIR / item["file"]).is_file():
-        raise FileNotFoundError(f"请把随文图片放到 {ASSET_DIR}：{item['file']}")
+        raise FileNotFoundError(f"Save the supplied image {item['file']} in {ASSET_DIR}.")
 ```
 
-**Parameter group: output fields in `response_format`.** All three fields are required, and each accepts an integer or `null`. When adapting the example to business fields, update the names, types, and missing-value convention here first.
+**Parameter group: output fields in `response_format`.** When adapting the example to business fields, update the names, types, and missing-value convention here first.
 
 ```python
 SCHEMA = {"type": "object", "properties": {k: {"type": ["integer", "null"]} for k in ["A", "B", "C"]},
@@ -198,9 +205,9 @@ STRICT_SCHEMA = True
 def request_for(image_path, model):
     raw = image_path.read_bytes()
     if not raw.startswith(b"\x89PNG\r\n\x1a\n") or len(raw) > 10_000_000:
-        raise ValueError("本示例只接受小于 10 MB 的 PNG；这是示例自身的范围。")
+        raise ValueError("This example accepts only PNG files up to 10 MB.")
     return {"model": model, "messages": [{"role": "user", "content": [
-        {"type": "text", "text": "读取图片表格中 A、B、C 对应的数值。只依据图片；空白或无法辨认的值填 null，不要猜测。"},
+        {"type": "text", "text": "Read the values for A, B, and C from the table in the image. Use only the image as evidence. Return null for blank or unreadable values; do not guess."},
         {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(raw).decode(), "detail": IMAGE_DETAIL}}]}],
         "response_format": {"type": "json_schema", "json_schema": {"name": "table_values", "strict": STRICT_SCHEMA, "schema": SCHEMA}},
         "reasoning_effort": "low", "max_tokens": 4096, "stream": False}
@@ -279,9 +286,9 @@ results = [clear_result, missing_result]
 for row in results:
     check = row["checks"]
     print(row["file"], {
-        "JSON可解析": check["parse_ok"], "字段类型符合要求": check["schema_ok"],
-        "正确字段数": check["correct_fields"], "对象符合要求": row["success"],
-        "完整响应耗时_秒": round(row["elapsed_seconds"], 2),
+        "parse_ok": check["parse_ok"], "schema_ok": check["schema_ok"],
+        "correct_fields": check["correct_fields"], "success": row["success"],
+        "full_response_seconds": round(row["elapsed_seconds"], 2),
     })
 output_dir = Path("vision_results")
 output_dir.mkdir(exist_ok=True)
@@ -302,4 +309,4 @@ Place your images in `ASSET_DIR`, then add their filenames and known reference a
 
 Model and image-input reference: [Step 5 Preview](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview). The three sample images are demonstration assets generated for this project.
 
-Last updated: 2026-09-27. The code runs in a standard Python project; the companion Notebook is an optional format with the same content. Model identifiers and API field names remain in English.
+Last updated: 2026-09-28.
