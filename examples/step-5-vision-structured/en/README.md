@@ -2,6 +2,8 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
+> The Chinese and English guides cover the same model capabilities and main workflows. Sample inputs, prompts, output fields, and validation details may differ; follow the code in the guide you are reading. The companion Python scripts and Notebooks follow the Chinese guide.
+
 ## 1. Image understanding and structured outputs
 
 Step 5 Preview can read text and images in the same message and respond with text. “Multimodal” means that the model can combine different input types. This guide uses its image-understanding capability to read tables. [Model and input types](https://platform.stepfun.com/docs/zh/guides/models/step-5-preview)
@@ -68,7 +70,7 @@ Windows PowerShell:
 $env:STEP_API_KEY = "YOUR_STEP_API_KEY"
 ```
 
-If the variable is unset, the script prompts for the key with input hidden.
+Run the Python commands below in the same terminal. For a Notebook, start Jupyter from that terminal so its kernel inherits the variable. If the variable is unset, the code prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -309,4 +311,4 @@ Place your images in `ASSET_DIR`, then add their filenames and known reference a
 
 Model and image-input reference: [Step 5 Preview](https://platform.stepfun.ai/docs/en/guides/models/step-5-preview). The three sample images are demonstration assets generated for this project.
 
-Last updated: 2026-09-28.
+Last updated: 2026-09-29.

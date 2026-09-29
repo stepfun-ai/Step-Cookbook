@@ -295,7 +295,7 @@ def main(full=False):
         return {"label": label, "settings": {"model": MODEL, **settings}, **session.summary()}
 
     # 3.8 在终端启动一轮对话
-    api_key = os.environ.get("STEPFUN_API_KEY", "").strip() or getpass.getpass("StepFun API Key（隐藏输入）：").strip()
+    api_key = os.environ.get("STEP_API_KEY", "").strip() or getpass.getpass("StepFun API Key（隐藏输入）：").strip()
     if not api_key:
         raise ValueError("需要 API Key 才能启动会话")
 

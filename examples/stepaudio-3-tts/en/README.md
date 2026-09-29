@@ -2,6 +2,8 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
+> The Chinese and English guides cover the same model capabilities and main workflows. Sample inputs, prompts, output fields, and validation details may differ; follow the code in the guide you are reading. The companion Python scripts and Notebooks follow the Chinese guide.
+
 ## 1. Understand text-to-speech and personalized voices
 
 StepAudio 3 TTS converts text into speech: your application supplies the text and voice configuration, and the API returns synthesized audio. It supports both non-streaming and streaming synthesis. This guide uses non-streaming synthesis to save complete WAV files for playback and comparison. [Model overview](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-tts)
@@ -68,7 +70,7 @@ Windows PowerShell:
 $env:STEP_API_KEY = "YOUR_STEP_API_KEY"
 ```
 
-If the variable is unset, the script prompts for the key with input hidden.
+Run the Python commands below in the same terminal. For a Notebook, start Jupyter from that terminal so its kernel inherits the variable. If the variable is unset, the code prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -392,4 +394,4 @@ For a preset voice, replace `TEXT` and `VOICE` and reuse `synthesize()`. For a p
 
 If the reference voice and target text are Chinese, set the corresponding language to `zh` and supply a Chinese transcript that matches the recording word for word. In your application, play the result at the actual sample rate stored in the WAV file. Retain the new voice ID and input version so you can regenerate audio under the same account.
 
-Last updated: 2026-09-28.
+Last updated: 2026-09-29.

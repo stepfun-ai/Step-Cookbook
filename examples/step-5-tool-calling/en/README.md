@@ -2,6 +2,8 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
+> The Chinese and English guides cover the same model capabilities and main workflows. Sample inputs, prompts, output fields, and validation details may differ; follow the code in the guide you are reading. The companion Python scripts and Notebooks follow the Chinese guide.
+
 ## 1. Understand the model and tool calling
 
 Step 5 Preview accepts messages and generates replies, and it can also request tool calls in its response. An application supplies descriptions of available functions in `tools`. The model returns a function name and arguments, the application executes the function and sends back the result, and the model continues from there. [Model overview](https://platform.stepfun.com/docs/zh/guides/models/step-5-preview) · [Tool-calling protocol](https://platform.stepfun.ai/docs/en/api-reference/tool-call)
@@ -67,7 +69,7 @@ Windows PowerShell:
 $env:STEP_API_KEY = "YOUR_STEP_API_KEY"
 ```
 
-If the variable is unset, the script prompts for the key with input hidden.
+Run the Python commands below in the same terminal. For a Notebook, start Jupyter from that terminal so its kernel inherits the variable. If the variable is unset, the code prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -338,4 +340,4 @@ To integrate your own tool, update the name and schema in `TOOL`, the dispatch a
 
 API reference: [StepFun tool calling](https://platform.stepfun.ai/docs/en/api-reference/tool-call).
 
-Last updated: 2026-09-28.
+Last updated: 2026-09-29.

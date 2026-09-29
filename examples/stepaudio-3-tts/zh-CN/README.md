@@ -2,7 +2,7 @@
 
 **简体中文** | [English](../en/README.md)
 
-> 两种语言版本使用相同的示例输入、参数与检查规则。代码中的中文提示词、字符串和输出字段保留原样，便于对照运行。
+> 中英文版本介绍相同的模型能力和主要流程；示例输入、提示词、输出字段和校验细节可能不同，请以所读版本的代码为准。配套 Python 脚本与 Notebook 对应中文版。
 
 ## 1. 认识文本转语音与个性化音色
 
@@ -59,7 +59,21 @@ python --version
 
 ### 2.4 配置密钥与运行方式
 
-程序读取环境变量 `STEPFUN_API_KEY`。可以在 IDE 的运行配置或服务部署环境中设置它；本地未设置时，代码会在终端隐藏询问。密钥无需写进源码。
+在运行示例的终端中设置 `STEP_API_KEY`，将 `YOUR_STEP_API_KEY` 替换为自己的 API 密钥。
+
+macOS / Linux：
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell：
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+设置后，在同一终端运行后面的 Python 命令；使用 Notebook 时，请从该终端启动 Jupyter，让内核继承环境变量。也可以在 IDE 的运行配置或服务部署环境中设置 `STEP_API_KEY`。未设置时，代码会隐藏询问密钥，密钥无需写进源码。
 
 中国站设置 `REGION = "cn"`，使用 `.com` 地址；国际站设置为 `"global"`，使用 `.ai` 地址。密钥应与对应站点一致。
 
@@ -88,7 +102,7 @@ BASE_URLS = {"cn": "https://api.stepfun.com/v1", "global": "https://api.stepfun.
 REGION = "cn"
 
 def get_key() -> str:
-    key = os.environ.get("STEPFUN_API_KEY", "").strip()
+    key = os.environ.get("STEP_API_KEY", "").strip()
     if not key:
         key = getpass.getpass("输入 StepFun API 密钥（隐藏输入，不保存到文件）：").strip()
     if not key:
@@ -381,4 +395,4 @@ for row in all_records:
 
 如果参考声音和目标文本为中文，将相应语言设置为 `zh`，使用与你的录音逐字对应的中文文本。把合成结果接到应用时，按 WAV 中的真实采样率播放；保留新音色 ID 和输入版本，就能在同一账户下重复生成。
 
-更新日期：2026-09-27。正文代码面向普通 Python 项目；配套 Notebook 为同内容的可选形式。模型标识与接口字段保留英文。
+更新日期：2026-09-29。正文代码面向普通 Python 项目；配套 Notebook 为同内容的可选形式。模型标识与接口字段保留英文。

@@ -2,7 +2,7 @@
 
 **简体中文** | [English](../en/README.md)
 
-> 两种语言版本使用相同的示例输入、参数与检查规则。代码中的中文提示词、字符串和输出字段保留原样，便于对照运行。
+> 中英文版本介绍相同的模型能力和主要流程；示例输入、提示词、输出字段和校验细节可能不同，请以所读版本的代码为准。配套 Python 脚本与 Notebook 对应中文版。
 
 ## 1. 认识实时语音模型与话轮
 
@@ -65,7 +65,21 @@ python -m pip install websocket-client==1.8.0 sounddevice==0.5.2
 
 ### 2.4 配置密钥与运行方式
 
-程序读取环境变量 `STEPFUN_API_KEY`。可以在 IDE 的运行配置或服务部署环境中设置它；本地未设置时，代码会在终端隐藏询问。密钥无需写进源码。
+在运行示例的终端中设置 `STEP_API_KEY`，将 `YOUR_STEP_API_KEY` 替换为自己的 API 密钥。
+
+macOS / Linux：
+
+```bash
+export STEP_API_KEY="YOUR_STEP_API_KEY"
+```
+
+Windows PowerShell：
+
+```powershell
+$env:STEP_API_KEY = "YOUR_STEP_API_KEY"
+```
+
+设置后，在同一终端运行后面的 Python 命令；使用 Notebook 时，请从该终端启动 Jupyter，让内核继承环境变量。也可以在 IDE 的运行配置或服务部署环境中设置 `STEP_API_KEY`。未设置时，代码会隐藏询问密钥，密钥无需写进源码。
 
 中国站设置 `REGION = "cn"`，使用 `.com` 地址；国际站设置为 `"global"`，使用 `.ai` 地址。密钥应与对应站点一致。
 
@@ -431,7 +445,7 @@ def run_session(settings, label, key):
 ```
 
 ```python
-api_key = os.environ.get("STEPFUN_API_KEY", "").strip() or getpass.getpass("StepFun API Key（隐藏输入）：").strip()
+api_key = os.environ.get("STEP_API_KEY", "").strip() or getpass.getpass("StepFun API Key（隐藏输入）：").strip()
 if not api_key:
     raise ValueError("需要 API Key 才能启动会话")
 ```
@@ -494,4 +508,4 @@ if RUN_RESULTS:
 
 先沿用本文参数完成一个短会话，再针对自己的停顿习惯和设备做单变量调整。模型可用名称与会话格式以[官方模型文档](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-realtime)和账户配置为准。
 
-更新日期：2026-09-27。正文代码面向普通 Python 项目；配套 Notebook 为同内容的可选形式。模型标识与接口字段保留英文。
+更新日期：2026-09-29。正文代码面向普通 Python 项目；配套 Notebook 为同内容的可选形式。模型标识与接口字段保留英文。

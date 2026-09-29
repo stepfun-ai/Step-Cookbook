@@ -19,7 +19,7 @@ def main(full=False):
     REGION = os.environ.get("STEPFUN_REGION", "cn")
 
     def get_key() -> str:
-        key = os.environ.get("STEPFUN_API_KEY", "").strip()
+        key = os.environ.get("STEP_API_KEY", "").strip()
         if not key:
             key = getpass.getpass("输入 StepFun API 密钥（隐藏输入，不保存到文件）：").strip()
         if not key:

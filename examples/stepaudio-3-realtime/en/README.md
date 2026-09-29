@@ -2,6 +2,8 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
+> The Chinese and English guides cover the same model capabilities and main workflows. Sample inputs, prompts, output fields, and validation details may differ; follow the code in the guide you are reading. The companion Python scripts and Notebooks follow the Chinese guide.
+
 ## 1. Understand realtime voice models and conversation turns
 
 StepAudio 3 Realtime supports two-way realtime voice interaction. It receives audio over a persistent WebSocket connection and returns text and audio events. The service handles speech understanding, turn management, and responses within one session, and allows the user to start speaking again while the assistant is talking. [Model overview](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-realtime)
@@ -74,7 +76,7 @@ Windows PowerShell:
 $env:STEP_API_KEY = "YOUR_STEP_API_KEY"
 ```
 
-If the variable is unset, the script prompts for the key with input hidden.
+Run the Python commands below in the same terminal. For a Notebook, start Jupyter from that terminal so its kernel inherits the variable. If the variable is unset, the code prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -505,4 +507,4 @@ Reuse the code along these boundaries:
 
 First complete a short session with this guide's settings, then change one variable at a time for your pause patterns and devices. Available model names and session formats are governed by the [official model documentation](https://platform.stepfun.ai/docs/en/guides/models/stepaudio-3-realtime) and your account configuration.
 
-Last updated: 2026-09-28.
+Last updated: 2026-09-29.

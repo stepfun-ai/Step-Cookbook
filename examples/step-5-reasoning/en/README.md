@@ -2,6 +2,8 @@
 
 [简体中文](../zh-CN/README.md) | **English**
 
+> The Chinese and English guides cover the same model capabilities and main workflows. Sample inputs, prompts, output fields, and validation details may differ; follow the code in the guide you are reading. The companion Python scripts and Notebooks follow the Chinese guide.
+
 ## 1. Understand the model and reasoning effort
 
 Step 5 Preview is a multimodal model that accepts text, image, and video inputs and generates text. Applications provide messages, source material, and tools through the API for the model to interpret, reason over, and answer. [Model overview](https://platform.stepfun.com/docs/zh/guides/models/step-5-preview)
@@ -67,7 +69,7 @@ Windows PowerShell:
 $env:STEP_API_KEY = "YOUR_STEP_API_KEY"
 ```
 
-If the variable is unset, the script prompts for the key with input hidden.
+Run the Python commands below in the same terminal. For a Notebook, start Jupyter from that terminal so its kernel inherits the variable. If the variable is unset, the code prompts for the key with input hidden.
 
 Set `REGION = "cn"` for the China region, which uses `.com` endpoints, or `"global"` for the international region, which uses `.ai` endpoints. Use a key issued for the selected region.
 
@@ -292,4 +294,4 @@ save_json(output_dir / "my_task.json", my_result)
 
 To use project-specific tasks, update the inputs and reference answers in `SAMPLES`. If the target output is no longer a single-field JSON object, update both the prompt requirements and `grade()`. Run one input first, then compare effort levels, and choose a configuration against your quality and response-time requirements. The reusable outputs are the request, recording, and comparison methods, along with the result files produced by your run.
 
-Last updated: 2026-09-28.
+Last updated: 2026-09-29.
