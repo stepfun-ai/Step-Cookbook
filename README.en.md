@@ -4,7 +4,7 @@
 
 Practical guides, runnable examples, and setup tools for building with StepFun models. Start with a specific task, understand how the example works, and adapt it to your own application.
 
-This repository brings together Cookbook content in one place, with more examples to come. Each guide explains a concrete task and includes the steps, sample inputs, code, and result checks needed to reproduce it.
+This repository brings together Cookbook content in one place, with more examples to come. Each guide explains a concrete task and includes the steps, sample inputs, code, and expected results needed to reproduce it.
 
 ## What you'll find
 
@@ -42,28 +42,28 @@ examples/
     └── assets/          # Images, screenshots, and diagrams
 ```
 
-This is an illustrative layout, not an additional example currently included in the repository.
+This layout is illustrative; the repository does not yet include a document-extraction example.
 
 ## How to use this repository
 
 1. **Choose a guide.** Find a task in the table below and open its English guide. Read the prerequisites before running the code.
-2. **Prepare the environment.** Follow the guide's setup instructions, obtain any required assets, and configure an API key with access to the relevant model and region. The five model examples below use `STEP_API_KEY` and prompt for it with input hidden when the variable is unset.
-3. **Run the example.** Follow the Python code blocks in the guide, or use the companion script or Notebook. When using the launchers, obtain the complete example directory and preserve its folder structure.
+2. **Prepare the environment.** Follow the guide's setup instructions, obtain any required assets, and configure an API key with access to the relevant model and region. The five model examples below use `STEP_API_KEY` and prompt for it with the input hidden if the variable is not set.
+3. **Run the example.** Follow the Python code blocks in the guide, or use the companion script or Notebook. When using the launchers, obtain the complete example directory and keep its relative paths intact.
 4. **Inspect and adapt.** Check the recorded results, then replace the sample inputs and adjust the parameters for your task.
 
-Environment requirements and dependencies vary by example. Initial launcher setup downloads the required runtime and dependencies, and live API calls require network access. Follow the instructions for the example you choose. Keep real API keys out of committed code, Notebooks, and output files.
+Environment requirements and dependencies vary by example. Initial launcher setup downloads the required runtime and dependencies. Live API calls require network access. Follow the instructions for the example you choose. Keep real API keys out of committed code, Notebooks, and output files.
 
 The English and Chinese guides cover the same model capabilities and main workflows, but prompts, sample inputs, result field names, and validation details may differ. The five examples' companion Python scripts, Notebooks, launcher menus, and directory-level setup guides currently follow the Chinese version. To reproduce the English examples, use the code in the English guide. Each guide ends with links to its companion files and starter project.
 
 ## Standalone tools
 
-The `scripts/` directory contains tools that can be used independently of a particular example. Code that serves only one Cookbook belongs in that example's directory.
+The `scripts/` directory contains tools that can be used independently of a particular example. Code used by only one example belongs in that example's directory.
 
 - Use a descriptive filename for a single-file tool.
 - Give tools with multiple files or platform-specific versions their own directory.
 - Document each tool's purpose, prerequisites, commands, inputs, outputs, and any files it changes.
 
-[Claude Key Setup — English guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/scripts/claude-key-setup/en/README.md) provides dedicated English Bash and PowerShell scripts for configuring Claude Code with a StepFun API key and endpoint. A [Simplified Chinese guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/scripts/claude-key-setup/zh-CN/README.md) is also available.
+[Claude Key Setup: English guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/scripts/claude-key-setup/en/README.md) provides dedicated English Bash and PowerShell scripts for configuring Claude Code with a StepFun API key and endpoint. A [Simplified Chinese guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/scripts/claude-key-setup/zh-CN/README.md) is also available.
 
 ## Adding a Cookbook
 
@@ -77,7 +77,7 @@ Make each example easy to understand, run, and adapt. Include the following:
 | Results | What the output contains and how to check whether it meets the task requirements |
 | Scope | Limitations, common issues, and parameters readers can change |
 
-Prefer public, anonymized, or synthetic sample data, and identify its source or nature. Review Notebook outputs before committing to remove credentials, personal information, and unnecessary logs. Preserve attribution and license information for third-party code, data, and assets.
+Prefer public, anonymized, or synthetic sample data, and identify its source or nature. Before committing, review Notebook outputs and remove credentials, personal information, and unnecessary logs. Preserve attribution and license information for third-party code, data, and assets.
 
 The [Cookbook writing guide](https://github.com/stepfun-ai/Step-Cookbook/blob/main/.github/COOKBOOK_WRITING_GUIDE.md) is available in Simplified Chinese for authors and editors.
 
