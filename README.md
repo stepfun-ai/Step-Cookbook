@@ -1,5 +1,7 @@
 # StepFun Cookbook
 
+**简体中文** | [English](https://github.com/stepfun-ai/Step-Cookbook/blob/main/README.en.md)
+
 围绕阶跃星辰（StepFun）模型的使用，整理实用案例、示例代码和辅助脚本，帮助开发者从具体问题出发，理解实现思路、运行示例，并将方法应用到自己的项目中。
 
 本仓库目前用于集中存储和整理 Cookbook 内容，后续逐步补充案例。每篇案例以一个明确的任务为起点，尽量提供完整的操作步骤、必要的示例数据和结果说明，方便查找、复现与复用。
