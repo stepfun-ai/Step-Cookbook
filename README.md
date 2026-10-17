@@ -83,6 +83,6 @@ examples/
 ## 当前内容
 
 - [Claude Key Setup](scripts/claude-key-setup/README.md)：为 Claude Code 配置 StepFun，提供 Bash 和 PowerShell 脚本，以及[中文说明](scripts/claude-key-setup/zh-CN/README.md)和[英文说明](scripts/claude-key-setup/en/README.md)。
-- Cookbook 案例：待整理收录。
+- [Step 5 Preview：工具调用前的客户审批（英文）](examples/step-5-customer-approval/en/README.md)：保存订单操作提案，通过 Pushary 请求客户审批，并在新进程中恢复执行。
 
 后续加入案例时，在这里补充对应入口，方便直接浏览。
